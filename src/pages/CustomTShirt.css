@@ -1,0 +1,35 @@
+.custom-box {
+  max-width: 600px !important;
+}
+
+.custom-tshirt-page {
+  padding-top: 4rem;
+  padding-bottom: 2rem;
+}
+
+.section-heading {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: var(--primary);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem;
+  border: 2px dashed var(--primary);
+  border-radius: 8px;
+  background: rgba(157, 78, 221, 0.05);
+  gap: 10px;
+}
+
+.upload-placeholder p {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}

@@ -1,0 +1,126 @@
+.footer {
+  margin-top: auto;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  border-radius: 20px 20px 0 0;
+  padding-top: 3rem;
+  background: rgba(15, 12, 41, 0.8);
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  padding-bottom: 3rem;
+}
+
+@media (min-width: 768px) {
+  .footer-content {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+}
+
+.footer-section h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.footer-section h3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 40px;
+  height: 2px;
+  background: var(--primary);
+}
+
+.footer-brand {
+  font-size: 2rem;
+  font-weight: 800;
+  background: -webkit-linear-gradient(45deg, #fff, var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.footer-desc {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border);
+}
+
+.social-links a:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(157, 78, 221, 0.4);
+}
+
+.links-section ul {
+  list-style: none;
+}
+
+.links-section li {
+  margin-bottom: 0.8rem;
+}
+
+.links-section a {
+  color: var(--text-secondary);
+  transition: color 0.3s ease, margin-left 0.3s ease;
+  display: inline-block;
+}
+
+.links-section a:hover {
+  color: var(--primary);
+  margin-left: 5px;
+}
+
+.contact-info {
+  list-style: none;
+}
+
+.contact-info li {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+.contact-icon {
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}

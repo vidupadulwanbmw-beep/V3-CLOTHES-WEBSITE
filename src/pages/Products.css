@@ -1,0 +1,107 @@
+.products-page {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  text-align: center;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: -webkit-linear-gradient(45deg, #fff, var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Product Card */
+.product-card {
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+}
+
+.product-image-container {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-img {
+  transform: scale(1.1);
+}
+
+.product-category {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(5px);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.product-info {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.product-info h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  flex: 1;
+  font-weight: 600;
+}
+
+.product-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-price {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.add-to-cart-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 0 15px rgba(157, 78, 221, 0.5);
+  transform: rotate(10deg);
+}
