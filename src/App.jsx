@@ -14,6 +14,7 @@ import Products from './pages/Products';
 import AdminDashboard from './pages/AdminDashboard';
 import { useCart } from './context/CartContext';
 import SeasonalParticles from './components/SeasonalParticles';
+import ChatBot from './components/ChatBot';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loadingAuth } = useCart();
@@ -183,6 +184,7 @@ function App() {
                 </AnimatePresence>
               </main>
               <Footer />
+              <ChatBot />
             </div>
           </Router>
         </motion.div>
