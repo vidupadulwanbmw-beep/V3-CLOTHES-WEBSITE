@@ -156,6 +156,7 @@ export function CartProvider({ children }) {
     } catch (error) {
       console.error("Error signing in with Google: ", error);
       alert("Login Error: " + error.message);
+      throw error;
     }
   };
 

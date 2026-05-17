@@ -86,8 +86,12 @@ export default function Signup() {
           type="button"
           className="btn btn-google btn-block"
           onClick={async () => {
-            await signInWithGoogle();
-            navigate('/');
+            try {
+              await signInWithGoogle();
+              navigate('/');
+            } catch (err) {
+              // Error handled by context
+            }
           }}
         >
           <FcGoogle size={24} className="google-icon" />
