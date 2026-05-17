@@ -207,8 +207,8 @@ export default function Products() {
                       Order Now
                     </button>
                     <button 
-                      className="btn btn-secondary" 
-                      style={{ flex: 1, fontSize: '0.85rem', padding: '0.6rem', textAlign: 'center', background: '#25D366', color: 'white', borderColor: '#25D366' }}
+                      className="btn btn-whatsapp" 
+                      style={{ flex: 1, fontSize: '0.85rem', padding: '0.6rem', textAlign: 'center' }}
                       onClick={() => handleCustomizeWhatsapp(product)}
                     >
                       WhatsApp

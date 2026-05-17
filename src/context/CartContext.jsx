@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { auth, googleProvider } from '../firebase';
+import { auth, googleProvider, db } from '../firebase';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { 
   signInWithRedirect, 
   signInWithPopup, 
@@ -15,9 +16,29 @@ import {
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem('v3_cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
   const [user, setUser] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
+
+  // Save cart to local storage and database whenever it changes
+  useEffect(() => {
+    localStorage.setItem('v3_cart', JSON.stringify(cart));
+
+    if (user && user.uid) {
+      const saveCartToDB = async () => {
+        try {
+          const userRef = doc(db, 'users', user.uid);
+          await setDoc(userRef, { cart: cart }, { merge: true });
+        } catch (error) {
+          console.error("Error saving cart to DB", error);
+        }
+      };
+      saveCartToDB();
+    }
+  }, [cart, user]);
 
   // Monitor Auth State
   useEffect(() => {
@@ -39,6 +60,21 @@ export function CartProvider({ children }) {
           photo: currentUser.photoURL,
           uid: currentUser.uid
         });
+
+        // Load cart from database
+        const loadCartFromDB = async () => {
+          try {
+            const userRef = doc(db, 'users', currentUser.uid);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists() && userSnap.data().cart) {
+              setCart(userSnap.data().cart);
+            }
+          } catch (error) {
+            console.error("Error loading cart from DB", error);
+          }
+        };
+        loadCartFromDB();
+
       } else {
         setUser(null);
       }

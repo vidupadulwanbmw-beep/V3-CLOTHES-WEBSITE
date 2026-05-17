@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useCart } from '../context/CartContext';
 import './AdminDashboard.css';
@@ -9,6 +9,7 @@ export default function AdminDashboard() {
   const { user } = useCart();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ visits: 0, sales: 0 });
   const [newProduct, setNewProduct] = useState({
     name: '',
     price: '',
@@ -41,6 +42,15 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchProducts();
+    
+    // Fetch real-time stats
+    const unsubStats = onSnapshot(doc(db, 'stats', 'global'), (docSnap) => {
+      if (docSnap.exists()) {
+        setStats(prev => ({ ...prev, visits: docSnap.data().visits || 0 }));
+      }
+    });
+    
+    return () => unsubStats();
   }, []);
 
   const [imageFiles, setImageFiles] = useState([]);
@@ -188,7 +198,7 @@ export default function AdminDashboard() {
     });
     setEditingProductId(product.id);
     setImageFiles([]);
-    setImagePreviews([]);
+    setImagePreviews(product.images || (product.image ? [product.image] : []));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -204,38 +214,40 @@ export default function AdminDashboard() {
       <div className="admin-grid">
         {/* Left side: Sales Progress */}
         <div className="admin-card glass">
-          <h3>Sales Progress</h3>
-          <p className="admin-subtitle">Monthly Target Overview</p>
+          <h3>Live Website Stats</h3>
+          <p className="admin-subtitle">Real-time Global Analytics</p>
           
           <div className="progress-container mt-4">
              <div className="progress-label">
-                <span>Revenue Target (Rs. 100k)</span>
-                <span>45%</span>
+                <span>Total Website Visitors</span>
+                <span style={{color: 'var(--primary)', fontWeight: 'bold'}}>{stats.visits}</span>
              </div>
-             <div className="progress-bar-bg">
+             <div className="progress-bar-bg" style={{ height: '8px' }}>
                 <motion.div 
                   className="progress-bar-fill"
                   initial={{ width: 0 }}
-                  animate={{ width: "45%" }}
+                  animate={{ width: `${Math.min((stats.visits / 1000) * 100, 100)}%` }}
                   transition={{ duration: 1.5 }}
                 />
              </div>
+             <div style={{ fontSize: '0.8rem', color: '#888', marginTop: '5px' }}>Target: 1,000 visits</div>
           </div>
           
           <div className="progress-container mt-4">
              <div className="progress-label">
-                <span>Orders Delivered</span>
-                <span>80%</span>
+                <span>Total Products in Store</span>
+                <span style={{color: 'var(--success)', fontWeight: 'bold'}}>{products.length}</span>
              </div>
-             <div className="progress-bar-bg">
+             <div className="progress-bar-bg" style={{ height: '8px' }}>
                 <motion.div 
                   className="progress-bar-fill"
                   style={{ background: 'var(--success)'}}
                   initial={{ width: 0 }}
-                  animate={{ width: "80%" }}
+                  animate={{ width: `${Math.min((products.length / 50) * 100, 100)}%` }}
                   transition={{ duration: 1.5, delay: 0.2 }}
                 />
              </div>
+             <div style={{ fontSize: '0.8rem', color: '#888', marginTop: '5px' }}>Target: 50 products</div>
           </div>
         </div>
 

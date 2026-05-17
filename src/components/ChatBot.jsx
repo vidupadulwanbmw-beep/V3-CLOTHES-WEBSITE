@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Bot } from 'lucide-react';
+import { Sparkles, X, Send, Bot } from 'lucide-react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // REPLACE THIS WITH YOUR ACTUAL API KEY FROM GOOGLE AI STUDIO
-const API_KEY = "AIzaSyA9kxbv2GNmFCmByo_OCdV5RgikiPbJcew";
+const API_KEY = "AIzaSyCcY2cscC1IDlrEx0cpRhG-z6sSDP7hoZU"
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { text: "ආයුබෝවන්! මම V3 Clothes AI සහයකයා. අද මම ඔබට උදව් කරන්නේ කොහොමද? (Hello! I'm the V3 Clothes AI assistant. How can I help you today?)", isBot: true }
+    { text: "Welcome to V3 Clothes! 😊 ආයුබෝවන්, මම V3 Clothes AI සහයකයා. අද ඔබට අවශ්‍ය කුමක්දැයි පවසන්න.", isBot: true }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -39,11 +39,15 @@ const ChatBot = () => {
       }
 
       const genAI = new GoogleGenerativeAI(API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
-      const prompt = `You are a helpful customer support AI for an online clothing store named "V3 Clothes" in Sri Lanka. 
-      Answer the customer's question nicely. You can speak in Sinhala (Singlish) and English. 
-      Be polite and concise.
+      const prompt = `You are a helpful AI assistant for "V3 Clothes" in Sri Lanka. 
+      INSTRUCTION: You should reply mainly in Sinhala script (සිංහල අකුරු), BUT you MUST use English for brand names, technical terms, fashion terms, and when it makes the sentence sound more natural (e.g. "T-shirt", "Order", "Delivery", "Website", "V3 Clothes"). Do not forcefully translate English terms into awkward Sinhala.
+      You can answer ANY question the user asks. 
+      If they ask for contact details, provide these exact details:
+      - WhatsApp: 0706461066 (Message us on WhatsApp)
+      - Email: v3clothesbusiness@gmail.com
+      - TikTok: @v3clothes
       Customer's question: ${userMessage}`;
 
       const result = await model.generateContent(prompt);
@@ -53,7 +57,7 @@ const ChatBot = () => {
       setMessages(prev => [...prev, { text: text, isBot: true }]);
     } catch (error) {
       console.error("Chat Error:", error);
-      setMessages(prev => [...prev, { text: "සමාවෙන්න, මට දැන් උත්තර දෙන්න අමාරුයි. පසුව උත්සාහ කරන්න. (Sorry, I'm having trouble right now. Please try again later.)", isBot: true }]);
+      setMessages(prev => [...prev, { text: `සමාවෙන්න, පොඩි දෝෂයක් ආවා. Error: ${error.message || "Unknown Error"}`, isBot: true }]);
     }
 
     setIsLoading(false);
@@ -75,10 +79,12 @@ const ChatBot = () => {
           width: '65px',
           height: '65px',
           borderRadius: '50%',
-          background: 'var(--primary, #4f46e5)',
+          background: 'rgba(255, 0, 60, 0.15)',
           color: 'white',
-          border: 'none',
-          boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
+          border: '1px solid rgba(255, 0, 60, 0.6)',
+          boxShadow: '0 0 15px rgba(255, 0, 60, 0.4), inset 0 0 10px rgba(255, 0, 60, 0.2)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
           display: isOpen ? 'none' : 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -86,13 +92,14 @@ const ChatBot = () => {
           zIndex: 9999
         }}
       >
-        <MessageCircle size={32} />
+        <Sparkles size={32} />
       </motion.button>
 
       {/* Chat Window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            className="glass"
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
@@ -104,20 +111,16 @@ const ChatBot = () => {
               width: '350px',
               height: '500px',
               maxHeight: '80vh',
-              background: '#1a1a1a',
-              borderRadius: '20px',
-              boxShadow: '0 15px 35px rgba(0,0,0,0.5)',
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
-              zIndex: 10000,
-              border: '1px solid rgba(255,255,255,0.1)'
+              zIndex: 10000
             }}
           >
             {/* Header */}
             <div style={{
               padding: '15px 20px',
-              background: 'linear-gradient(135deg, var(--primary, #4f46e5), #2e0014)',
+              background: 'rgba(0, 0, 0, 0.4)',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -182,7 +185,7 @@ const ChatBot = () => {
             {/* Input Area */}
             <div style={{
               padding: '15px',
-              background: '#111',
+              background: 'rgba(0,0,0,0.5)',
               borderTop: '1px solid rgba(255,255,255,0.1)',
               display: 'flex',
               gap: '10px'

@@ -1,26 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import SeasonalParticles from '../components/SeasonalParticles';
+import { FaFacebook, FaInstagram, FaTiktok, FaWhatsapp } from 'react-icons/fa';
 import './Home.css';
 
 export default function Home() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
-  const getSeasonalGreeting = () => {
-    const currentMonth = new Date().getMonth();
-    switch (currentMonth) {
-      case 3: return "සුබ අලුත් අවුරුද්දක් වේවා!"; // April
-      case 4: return "සුබ වෙසක් මංගල්‍යයක් වේවා!"; // May
-      case 1: return "Happy Valentine's Day!"; // February
-      case 11: return "Merry Christmas & Happy New Year!"; // December
-      case 9: return "Happy Halloween!"; // October
-      default: return null;
-    }
-  };
-  const seasonalGreeting = getSeasonalGreeting();
 
   // Animation Variants
   const containerVariants = {
@@ -77,8 +64,6 @@ export default function Home() {
       exit="exit"
       className="home-page"
     >
-      <SeasonalParticles />
-      
       <div className="hero-section">
         {/* Animated background elements */}
         <motion.div 
@@ -92,21 +77,13 @@ export default function Home() {
           transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
         />
 
-        <div className="container hero-content">
-          <div className="hero-text">
+        <div className="container hero-content" style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className="hero-text" style={{ textAlign: 'center', width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <motion.div variants={textVariants}>
               <h1 className="heading-xl">
                 <span className="text-gradient">{t('hero_title')}</span>
               </h1>
             </motion.div>
-            
-            {seasonalGreeting && (
-              <motion.div variants={textVariants}>
-                <h3 className="seasonal-greeting" style={{ color: 'var(--primary)', marginBottom: '1rem', fontWeight: 'bold', letterSpacing: '1px' }}>
-                  ✨ {seasonalGreeting} ✨
-                </h3>
-              </motion.div>
-            )}
             
             <motion.div variants={textVariants}>
               <p className="hero-subtitle">
@@ -118,27 +95,104 @@ export default function Home() {
               <motion.button 
                 className="btn btn-primary hero-btn" 
                 onClick={() => navigate('/products')}
-                whileHover={{ scale: 1.05, boxShadow: "0px 0px 25px rgba(157, 78, 221, 0.7)" }}
+                whileHover={{ scale: 1.05, boxShadow: "0px 0px 25px rgba(255, 0, 60, 0.7)" }}
                 whileTap={{ scale: 0.95 }}
+                style={{ marginTop: '1rem', padding: '1rem 3rem', fontSize: '1.2rem', borderRadius: '50px' }}
               >
                 {t('shop_now')}
               </motion.button>
             </motion.div>
-          </div>
 
-          <motion.div 
-            variants={floatingImageVariants}
-            className="hero-image-wrapper"
-          >
-            <motion.div animate={floatAnimation} className="image-float-container">
-              <div className="image-glow"></div>
-              <img 
-                src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=800&q=80" 
-                alt="Fashion Hero" 
-                className="hero-img glass" 
-              />
+            {/* Follow Us Section */}
+            <motion.div variants={textVariants} style={{ marginTop: '4rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <h3 style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.2rem', marginBottom: '1.5rem', letterSpacing: '3px', textTransform: 'uppercase' }}>Follow Us</h3>
+              <div style={{ display: 'flex', gap: '20px' }}>
+                <motion.a 
+                  href="https://www.facebook.com/share/1DrkbUZau7/" target="_blank" rel="noreferrer"
+                  whileHover={{ 
+                    scale: 1.1, 
+                    rotate: 10, 
+                    background: 'rgba(24, 119, 242, 0.4)',
+                    boxShadow: '0 0 25px rgba(24, 119, 242, 0.8), inset 0 0 15px rgba(24, 119, 242, 0.5)',
+                    borderColor: 'rgba(24, 119, 242, 1)'
+                  }}
+                  whileTap={{ scale: 0.9 }}
+                  style={{ 
+                    color: '#fff', fontSize: '1.8rem', transition: 'all 0.3s ease',
+                    width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(24, 119, 242, 0.15)', border: '1px solid rgba(24, 119, 242, 0.6)',
+                    boxShadow: '0 0 15px rgba(24, 119, 242, 0.4), inset 0 0 10px rgba(24, 119, 242, 0.2)',
+                    backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)'
+                  }}
+                >
+                  <FaFacebook />
+                </motion.a>
+
+                <motion.a 
+                  href="https://www.instagram.com/v3clothes.business?igsh=ODAxOWtkaWhmYmJz" target="_blank" rel="noreferrer"
+                  whileHover={{ 
+                    scale: 1.1, 
+                    rotate: -10, 
+                    background: 'rgba(225, 48, 108, 0.4)',
+                    boxShadow: '0 0 25px rgba(225, 48, 108, 0.8), inset 0 0 15px rgba(225, 48, 108, 0.5)',
+                    borderColor: 'rgba(225, 48, 108, 1)'
+                  }}
+                  whileTap={{ scale: 0.9 }}
+                  style={{ 
+                    color: '#fff', fontSize: '1.8rem', transition: 'all 0.3s ease',
+                    width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(225, 48, 108, 0.15)', border: '1px solid rgba(225, 48, 108, 0.6)',
+                    boxShadow: '0 0 15px rgba(225, 48, 108, 0.4), inset 0 0 10px rgba(225, 48, 108, 0.2)',
+                    backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)'
+                  }}
+                >
+                  <FaInstagram />
+                </motion.a>
+
+                <motion.a 
+                  href="https://www.tiktok.com/@v3.clothes?_r=1&_t=ZS-95rcPcdvpbU" target="_blank" rel="noreferrer"
+                  whileHover={{ 
+                    scale: 1.1, 
+                    rotate: 10, 
+                    background: 'rgba(0, 242, 254, 0.4)',
+                    boxShadow: '0 0 25px rgba(0, 242, 254, 0.8), inset 0 0 15px rgba(0, 242, 254, 0.5)',
+                    borderColor: 'rgba(0, 242, 254, 1)'
+                  }}
+                  whileTap={{ scale: 0.9 }}
+                  style={{ 
+                    color: '#fff', fontSize: '1.8rem', transition: 'all 0.3s ease',
+                    width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(0, 242, 254, 0.15)', border: '1px solid rgba(0, 242, 254, 0.6)',
+                    boxShadow: '0 0 15px rgba(0, 242, 254, 0.4), inset 0 0 10px rgba(0, 242, 254, 0.2)',
+                    backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)'
+                  }}
+                >
+                  <FaTiktok />
+                </motion.a>
+
+                <motion.a 
+                  href="https://wa.me/94706461066" target="_blank" rel="noreferrer"
+                  whileHover={{ 
+                    scale: 1.1, 
+                    rotate: -10, 
+                    background: 'rgba(37, 211, 102, 0.4)',
+                    boxShadow: '0 0 25px rgba(37, 211, 102, 0.8), inset 0 0 15px rgba(37, 211, 102, 0.5)',
+                    borderColor: 'rgba(37, 211, 102, 1)'
+                  }}
+                  whileTap={{ scale: 0.9 }}
+                  style={{ 
+                    color: '#fff', fontSize: '1.8rem', transition: 'all 0.3s ease',
+                    width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(37, 211, 102, 0.15)', border: '1px solid rgba(37, 211, 102, 0.6)',
+                    boxShadow: '0 0 15px rgba(37, 211, 102, 0.4), inset 0 0 10px rgba(37, 211, 102, 0.2)',
+                    backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)'
+                  }}
+                >
+                  <FaWhatsapp />
+                </motion.a>
+              </div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </div>
 

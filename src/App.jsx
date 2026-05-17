@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { doc, setDoc, increment, onSnapshot } from 'firebase/firestore';
+import { db } from './firebase';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -52,43 +54,25 @@ const AdminRoute = ({ children }) => {
 
 function App() {
   const [loading, setLoading] = useState(true);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Dynamic Monthly Themes Logic
-    const currentMonth = new Date().getMonth(); // 0 = Jan, 11 = Dec
-    const root = document.documentElement;
+    // Mouse tracker
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
 
-    if (currentMonth === 3) {
-      // April: Avurudu (New Year) - Orange/Yellow/Red
-      root.style.setProperty('--primary', '#f59e0b'); // Amber
-      root.style.setProperty('--primary-hover', '#d97706');
-      root.style.setProperty('--bg-gradient', 'linear-gradient(135deg, #2a0800 0%, #5c1800 50%, #1a0500 100%)');
-    } else if (currentMonth === 4) {
-      // May: Vesak - Yellow/White
-      root.style.setProperty('--primary', '#fde047'); // Yellow
-      root.style.setProperty('--primary-hover', '#eab308');
-      root.style.setProperty('--bg-gradient', 'linear-gradient(135deg, #1f1d00 0%, #423d00 50%, #121000 100%)');
-    } else if (currentMonth === 1) {
-      // February: Valentine's - Pink/Red
-      root.style.setProperty('--primary', '#ec4899'); // Pink
-      root.style.setProperty('--primary-hover', '#db2777');
-      root.style.setProperty('--bg-gradient', 'linear-gradient(135deg, #2e0014 0%, #4a0024 50%, #17000a 100%)');
-    } else if (currentMonth === 11) {
-      // December: Christmas - Red/Green
-      root.style.setProperty('--primary', '#ef4444'); // Red
-      root.style.setProperty('--primary-hover', '#dc2626');
-      root.style.setProperty('--bg-gradient', 'linear-gradient(135deg, #001f0c 0%, #003d18 50%, #001206 100%)');
-    } else if (currentMonth === 9) {
-      // October: Halloween - Orange/Dark
-      root.style.setProperty('--primary', '#f97316'); // Orange
-      root.style.setProperty('--primary-hover', '#ea580c');
-      root.style.setProperty('--bg-gradient', 'linear-gradient(135deg, #1c0c00 0%, #3d1b00 50%, #0a0400 100%)');
-    } else {
-      // Default Theme (Reset to CSS defaults)
-      root.style.removeProperty('--primary');
-      root.style.removeProperty('--primary-hover');
-      root.style.removeProperty('--bg-gradient');
-    }
+    // Visitor Counter
+    const incrementVisitor = async () => {
+      try {
+        const statsRef = doc(db, 'stats', 'global');
+        await setDoc(statsRef, { visits: increment(1) }, { merge: true });
+      } catch (e) {
+        console.error("Error updating visits", e);
+      }
+    };
+    incrementVisitor();
 
     // Show splash screen for 2.5 seconds
     const timer = setTimeout(() => {
@@ -103,61 +87,137 @@ function App() {
         <motion.div
           key="splash"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-          transition={{ duration: 0.6, ease: "easeInOut" }}
+          exit={{ opacity: 0, filter: "blur(20px)" }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
           style={{
             position: 'fixed',
             inset: 0,
-            width: '100vw',
-            height: '100vh',
-            background: '#0a0a0a',
+            background: '#000',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 9999
+            zIndex: 9999,
+            overflow: 'hidden'
           }}
         >
-          <motion.img 
-            src="./logo.jpg.jpg" 
-            alt="V3 Clothes Logo"
-            initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
-            animate={{ scale: [0.8, 1.1, 1], opacity: 1, rotate: 0 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            style={{ 
-              width: '150px', 
-              height: '150px',
-              objectFit: 'cover',
-              borderRadius: '30px', 
-              boxShadow: '0 0 40px rgba(79, 70, 229, 0.4)',
-              border: '2px solid rgba(255,255,255,0.1)'
-            }}
-          />
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-            style={{ 
+          {/* Floating Liquid Glass Theme Background */}
+          {[...Array(6)].map((_, i) => {
+            return (
+              <motion.div
+                key={`glass-${i}`}
+                className="glass"
+                initial={{
+                  x: (Math.random() - 0.5) * window.innerWidth,
+                  y: (Math.random() - 0.5) * window.innerHeight,
+                  rotate: Math.random() * 360,
+                  opacity: 0.1,
+                  scale: Math.random() * 2 + 1,
+                  width: `${Math.random() * 300 + 100}px`,
+                  height: `${Math.random() * 300 + 100}px`,
+                  borderRadius: Math.random() > 0.5 ? '50%' : '20px'
+                }}
+                animate={{
+                  y: [null, (Math.random() - 0.5) * window.innerHeight],
+                  rotate: [null, Math.random() * 360],
+                  opacity: [0.1, 0.3, 0.1]
+                }}
+                transition={{ 
+                  duration: 15 + Math.random() * 10, 
+                  repeat: Infinity, 
+                  repeatType: "reverse", 
+                  ease: "easeInOut" 
+                }}
+                style={{
+                  position: 'absolute',
+                  background: 'linear-gradient(135deg, rgba(255,0,60,0.1), rgba(0,0,0,0))',
+                  border: '1px solid rgba(255,0,60,0.2)',
+                  boxShadow: '0 0 30px rgba(255,0,60,0.1)',
+                  zIndex: 1
+                }}
+              />
+            );
+          })}
+
+          {/* Powder particles merging */}
+          {[...Array(80)].map((_, i) => {
+            const randomX = (Math.random() - 0.5) * (window.innerWidth || 1000);
+            const randomY = (Math.random() - 0.5) * (window.innerHeight || 800);
+            return (
+              <motion.div
+                key={i}
+                initial={{ 
+                  x: randomX, 
+                  y: randomY,
+                  opacity: 0,
+                  scale: Math.random() * 2 + 0.5
+                }}
+                animate={{ 
+                  x: 0, 
+                  y: 0, 
+                  opacity: [0, 1, 0], 
+                  scale: 0 
+                }}
+                transition={{ 
+                  duration: 1.2, 
+                  ease: "circIn", 
+                  delay: Math.random() * 0.4 
+                }}
+                style={{
+                  position: 'absolute',
+                  width: '4px',
+                  height: '4px',
+                  background: 'var(--primary)',
+                  borderRadius: '50%',
+                  boxShadow: '0 0 10px var(--primary)'
+                }}
+              />
+            );
+          })}
+
+          {/* Logo and Text that emerge from the powder */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0, filter: "blur(20px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={{ delay: 1.0, duration: 0.8, type: "spring", stiffness: 100 }}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 10 }}
+          >
+            <motion.img 
+              src="./logo.jpg.jpg" 
+              alt="V3 Clothes Logo"
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ delay: 1.2, duration: 0.5 }}
+              style={{ 
+                width: '150px', 
+                height: '150px',
+                objectFit: 'cover',
+                borderRadius: '30px', 
+                boxShadow: '0 0 40px rgba(255, 0, 60, 0.4)',
+                border: '2px solid rgba(255,0,60,0.2)'
+              }}
+            />
+            <div style={{ 
               marginTop: '30px', 
               color: '#fff', 
-              fontSize: '1.8rem', 
+              fontSize: '2rem', 
               fontWeight: 'bold',
-              letterSpacing: '3px'
-            }}
-          >
-            V3 <span style={{ color: 'var(--primary)' }}>CLOTHES</span>
+              letterSpacing: '5px'
+            }}>
+              V3 <span style={{ color: 'var(--primary)', textShadow: '0 0 15px var(--primary)' }}>CLOTHES</span>
+            </div>
+            <motion.div
+               initial={{ width: 0 }}
+               animate={{ width: "150px" }}
+               transition={{ duration: 1.0, ease: "easeInOut", delay: 1.2 }}
+               style={{
+                 marginTop: '20px',
+                 height: '4px',
+                 background: 'var(--primary)',
+                 borderRadius: '10px',
+                 boxShadow: '0 0 10px var(--primary)'
+               }}
+            />
           </motion.div>
-          <motion.div
-             initial={{ width: 0 }}
-             animate={{ width: "150px" }}
-             transition={{ duration: 1.5, ease: "easeInOut", delay: 0.2 }}
-             style={{
-               marginTop: '20px',
-               height: '4px',
-               background: 'var(--primary)',
-               borderRadius: '10px'
-             }}
-          />
         </motion.div>
       ) : (
         <motion.div 
@@ -166,6 +226,26 @@ function App() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
         >
+          {/* Custom Red Cursor Tracker (Global) */}
+          <motion.div
+            className="cursor-glow"
+            animate={{
+              x: mousePosition.x - 150,
+              y: mousePosition.y - 150,
+            }}
+            transition={{ type: "tween", ease: "backOut", duration: 0.5 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '300px',
+              height: '300px',
+              background: 'radial-gradient(circle, rgba(255,0,60,0.15) 0%, rgba(255,0,60,0) 70%)',
+              borderRadius: '50%',
+              pointerEvents: 'none',
+              zIndex: 9999, // High z-index so it stays on top of most things
+            }}
+          />
           <Router>
             <div className="page-wrapper">
               <Navbar />
